@@ -1,0 +1,26 @@
+FLASHOBJS = driverStack.o stack.o
+FLASHMEMOBJS = clac.o getkey.o stack.o cstr2dfp.o int2cstr.o putch.o putstring.o String_length.o
+
+ifdef DEBUG
+DEBUGFLGS = -g
+else
+DEBUGFLGS =
+endif
+LSTFLGS =
+
+all: stack.out clac.out
+
+%.o : %.S
+	gcc -g $(DEBUGFLGS) $(LSTFLGS) -c $< -o $@
+
+%.o : %.s
+	as -g $(DEBUGFLGS) $(LSTFLGS) $< -o $@
+
+stack.out: $(FLASHOBJS)
+	ld -o stack.out $(FLASHOBJS) /usr/lib/aarch64-linux-gnu/libc.so
+
+clac.out: $(FLASHMEMOBJS)
+	ld -o clac.out $(FLASHMEMOBJS) /usr/lib/aarch64-linux-gnu/libc.so
+
+clean:
+	rm -f *.o stack.out clac.out
